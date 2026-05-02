@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="product.css">
+</head>
+<body>
+ <div class="news-strip">
+		
+	</div>
+	<div class="hero">
+		<div class="hero-text">
+			<h1>Welcome to Rolex</h1>
+			<p>Your one-stop shop for Rolex, Discover the latest trends and exclusive offers!</p>
+			<a href="product.html" style="background:#ff4081;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:18px;">Shop Now</a>
+			<a href="cart.html" style="display:inline-block;margin-top:16px;background:#0077ff;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:18px;">View Cart</a>
+		</div>
+		<div class="hero-img">
+			<img id="fashionBanner" src="./rolex img/a1.jpeg" alt="Fashion Banner">
+		</div>
+	</div>
+	<div class="featured-products">
+		<h2>Featured Products</h2>
+		<div class="products-grid" id="productsGrid">
+			<!-- Dynamic products will be loaded here -->
+		</div>
+		<div class="static-products">
+			<div class="product-card">
+				<img src="./rolex img/a1.jpeg" alt="Dress">
+				<h3>ice rolex</h3>
+				<p>Light, breezy, and perfect for out fit.</p>
+				<div class="price">$1200</div>
+				<div style="margin-top:12px;"><button class="add-cart-btn">Add to Cart</button></div>
+			</div>
+			<div class="product-card">
+				<img src="./rolex img/a2.jpeg" alt="Shoes">
+				<h3>gold rolex</h3>
+				<p>Comfort meets style for every occasion.</p>
+				<div class="price">$1400</div>
+				<div style="margin-top:12px;"><button class="add-cart-btn">Add to Cart</button></div>
+			</div>
+			<div class="product-card">
+				<img src="./rolex img/a3.jpeg" alt="Dress">
+				<h3>Floral Maxi rolex</h3>
+				<p>Stand out with vibrant floral prints.</p>
+				<div class="price">$1600</div>
+				<div style="margin-top:12px;"><button class="add-cart-btn">Add to Cart</button></div>
+			</div>
+			<div class="product-card">
+				<img src="./rolex img/a4.jpeg" alt="Shoes">
+				<h3>Sporty Rolex</h3>
+				<p>Perfect for active lifestyles and casual wear.</p>
+				<div class="price">$1300</div>
+				<div style="margin-top:12px;"><button class="add-cart-btn">Add to Cart</button></div>
+			</div>
+			<div class="product-card">
+				<img src="./rolex img/a5.jpeg" alt="Dress">
+				<h3>Evening Gown</h3>
+				<p>Make a statement at any event.</p>
+				<div class="price">$1129.99</div>
+				<div style="margin-top:12px;"><button class="add-cart-btn">Add to Cart</button></div>
+			</div>
+			<div class="product-card">
+				<img src="./rolex img/a6.jpeg" alt="Shoes">
+				<h3>dimond rolex</h3>
+				<p>Stay cool and comfortable all day.</p>
+				<div class="price">$1139.99</div>
+				<div style="margin-top:12px;"><button class="add-cart-btn">Add to Cart</button></div>
+			</div>
+			<div class="product-card">
+				<img src="./rolex img/a7.jpeg" alt="Dress">
+				<h3>Casual rolex</h3>
+				<p>Soft touch pad, rolex.</p>
+				<div class="price">$1119.99</div>
+				<div style="margin-top:12px;"><button class="add-cart-btn">Add to Cart</button></div>
+			</div>
+			<div class="product-card">
+				<img src="./rolex img/a8.jpeg" alt="Shoes">
+				<h3>water prove</h3>
+				<p>Lightweight and durable for active lifestyles.</p>
+				<div class="price">$1159.99</div>
+				<div style="margin-top:12px;"><button class="add-cart-btn">Add to Cart</button></div>
+			</div>
+			<div class="product-card">
+				<img src="./rolex img/a9.jpeg" alt="Dress">
+				<h3>Dimond Rolex</h3>
+				<p>Classic for all seasons.</p>
+				<div class="price">$1149.99</div>
+				<div style="margin-top:12px;"><button class="add-cart-btn">Add to Cart</button></div>
+			</div>
+			<div class="product-card">
+				<img src="./rolex img/b1.jpeg" alt="Shoes">
+				<h3>diamond</h3>
+				<p>gjowing outfit</p>
+				<div class="price">$2169.99</div>
+				<div style="margin-top:12px;"><button class="add-cart-btn">Add to Cart</button></div>
+			</div>
+			<div class="product-card">
+				<img src="./rolex img/b2.jpeg" alt="Dress">
+				<h3>dimond</h3>
+				<p>Shine at every celebration.</p>
+				<div class="price">$2289.99</div>
+				<div style="margin-top:12px;"><button class="add-cart-btn">Add to Cart</button></div>
+			</div>
+			<div class="product-card">
+				<img src="./rolex img/b2.jpeg" alt="Shoes">
+				<h3>Beach  Rolexs</h3>
+				<p>nice for boyfriends</p>
+				<div class="price">$1114.99</div>
+				<div style="margin-top:12px;"><button class="add-cart-btn">Add to Cart</button></div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal for product image -->
+	<div id="productModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center;">
+		<div style="position: relative; max-width: 80%; max-height: 80%;">
+			<span id="closeModal" style="position: absolute; top: -30px; right: -30px; font-size: 30px; color: #fff; cursor: pointer;">&times;</span>
+			<img id="modalImg" src="" alt="" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">
+		</div>
+	</div>
+
+		<script>
+// Require login before viewing products page
+if (localStorage.getItem('Rolex_logged_in') !== 'true') {
+    window.location.href = 'login.html';
+}
+
+// Hide login/register links if user is logged in
+if (localStorage.getItem('Rolex_logged_in') === 'true') {
+    document.querySelectorAll('.navbar a').forEach(function(link) {
+        if (link.getAttribute('href') === 'Login.html' || link.getAttribute('href') === 'regis.html') {
+            link.style.display = 'none';
+        }
+    });
+}
+
+// Load dynamic products from localStorage
+var products = JSON.parse(localStorage.getItem('fashion_products') || '[]');
+var grid = document.getElementById('productsGrid');
+var isAdmin = localStorage.getItem('is_admin') === 'true';
+products.forEach(function(product, index) {
+    var card = document.createElement('div');
+    card.className = 'product-card';
+    var buttonsHtml = '<button class="add-cart-btn">Add to Cart</button>';
+    if (isAdmin) {
+      buttonsHtml += '<button class="delete-btn" data-index="' + index + '">Delete</button>';
+    }
+    card.innerHTML = `
+        <img src="${product.img}" alt="${product.name}" style="cursor: pointer;">
+        <h3 style="cursor: pointer;">${product.name}</h3>
+        <p>${product.desc}</p>
+        <div class="price">$${product.price}</div>
+        <div style="margin-top:12px;">
+          ${buttonsHtml}
+        </div>
+    `;
+    grid.appendChild(card);
+});
+
+// Add to Cart functionality using localStorage
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('add-cart-btn')) {
+        var card = e.target.closest('.product-card');
+        var name = card.querySelector('h3').textContent;
+        var price = card.querySelector('.price').textContent.replace('$','');
+        var img = card.querySelector('img').getAttribute('src');
+        var product = { name: name, price: price, img: img, qty: 1 };
+        var cart = JSON.parse(localStorage.getItem('aidify_cart') || '[]');
+        var found = cart.find(item => item.name === name);
+        if (found) {
+            found.qty += 1;
+        } else {
+            cart.push(product);
+        }
+        localStorage.setItem('aidify_cart', JSON.stringify(cart));
+        e.target.textContent = 'Added!';
+        e.target.style.background = '#4caf50';
+        setTimeout(function() {
+            e.target.textContent = 'Add to Cart';
+            e.target.style.background = '';
+        }, 1200);
+    } else if (e.target.classList.contains('delete-btn')) {
+        var index = e.target.getAttribute('data-index');
+        var products = JSON.parse(localStorage.getItem('fashion_products') || '[]');
+        products.splice(index, 1);
+        localStorage.setItem('fashion_products', JSON.stringify(products));
+        location.reload(); // Reload to update the display
+    } else if (e.target.closest('.product-card') && !e.target.classList.contains('add-cart-btn') && !e.target.classList.contains('delete-btn')) {
+        // Click on product card (not buttons) to open image modal
+        var card = e.target.closest('.product-card');
+        var img = card.querySelector('img').src;
+
+        document.getElementById('modalImg').src = img;
+        document.getElementById('productModal').style.display = 'flex';
+    }
+});
+
+// Close modal
+document.getElementById('closeModal').addEventListener('click', function() {
+    document.getElementById('productModal').style.display = 'none';
+});
+
+// Close modal when clicking outside
+document.getElementById('productModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        this.style.display = 'none';
+    }
+});
+
+// Fashion banner slideshow
+const bannerImages = ["./rolex img/a8.jpeg","./rolex img/a1.jpeg","./rolex img/a2.jpeg","./rolex img/a3.jpeg","./rolex img/a4.jpeg","./rolex img/a5.jpeg","./rolex img/a6.jpeg"]; // Add more if needed
+let bannerIndex = 0;
+setInterval(function() {
+    bannerIndex = (bannerIndex + 1) % bannerImages.length;
+    document.getElementById('fashionBanner').src = bannerImages[bannerIndex];
+}, 3000);
+</script>
+</body>
+</html>

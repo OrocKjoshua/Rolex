@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart - Aidify</title>
+    <link rel="stylesheet" href="index.css">
+    <style>
+        body {
+            background: #f4f8fb;
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .cart-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            padding: 32px 24px;
+        }
+        h1 {
+            text-align: center;
+            color: #0066ff;
+            margin-bottom: 32px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+        }
+        th, td {
+            padding: 14px 10px;
+            text-align: left;
+        }
+        th {
+            background: #f0f6ff;
+            color: #222;
+        }
+        td img {
+            width: 60px;
+            border-radius: 8px;
+        }
+        .remove-btn {
+            background: #ff4d4d;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .remove-btn:hover {
+            background: #d93636;
+        }
+        .cart-summary {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .summary-details {
+            background: #f0f6ff;
+            padding: 18px 24px;
+            border-radius: 12px;
+            font-size: 18px;
+            color: #222;
+        }
+        .checkout-btn {
+            display: block;
+            width: 100%;
+            background: #0066ff;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 18px;
+            transition: background 0.3s;
+        }
+        .checkout-btn:hover {
+            background: #0052cc;
+        }
+        @media (max-width: 600px) {
+            .cart-container {
+                padding: 12px 4px;
+            }
+            th, td {
+                padding: 8px 4px;
+            }
+            .summary-details {
+                font-size: 16px;
+                padding: 10px 8px;
+            }
+            .checkout-btn {
+                font-size: 16px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cart-container">
+        <h1>Your Cart is always here for you</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Remove</th>
+                </tr>
+            </thead>
+            <tbody id="cart-items">
+                <!-- Cart items will be loaded here by JS -->
+            </tbody>
+        </table>
+        <div class="cart-summary">
+            <div class="summary-details">
+                Subtotal: <span id="subtotal">$0.00</span><br>
+                Shipping: <span id="shipping">$0.00</span><br>
+                <strong>Total: <span id="total">$0.00</span></strong>
+            </div>
+        </div>
+        <button class="checkout-btn" id="checkoutBtn">Proceed to Checkout</button>
+        <button class="checkout-btn" id="whatsappBtn" style="background:#25D366; margin-top:8px;">Send Cart on WhatsApp</button>
+        <div id="checkout-message" style="display:none; color:green; text-align:center; margin-top:20px; font-size:18px;">Thank you for shopping with daniel_fashion!</div>
+    </div>
+    <script>
+        // Load cart from localStorage and render
+        function renderCart() {
+            var cart = JSON.parse(localStorage.getItem('aidify_cart') || '[]');
+            var tbody = document.getElementById('cart-items');
+            tbody.innerHTML = '';
+            cart.forEach(function(item, idx) {
+                var tr = document.createElement('tr');
+                tr.setAttribute('data-price', item.price);
+                tr.innerHTML = `
+                    <td><img src="${item.img}" alt="Product" onclick="window.open(this.src, '_blank')" style="cursor:pointer;"></td>
+                    <td>${item.name}</td>
+                    <td>$${parseFloat(item.price).toFixed(2)}</td>
+                    <td><input type="number" value="${item.qty}" min="1" class="qty-input" style="width:50px;"></td>
+                    <td class="item-total">$${(parseFloat(item.price) * item.qty).toFixed(2)}</td>
+                    <td><button class="remove-btn">Remove</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+            updateTotals();
+        }
+        function updateTotals() {
+            let subtotal = 0;
+            document.querySelectorAll('#cart-items tr').forEach(row => {
+                const price = parseFloat(row.getAttribute('data-price'));
+                const qty = parseInt(row.querySelector('.qty-input').value);
+                const total = price * qty;
+                row.querySelector('.item-total').textContent = `$${total.toFixed(2)}`;
+                subtotal += total;
+            });
+            document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            const shipping = subtotal > 0 ? 10 : 0;
+            document.getElementById('shipping').textContent = `$${shipping.toFixed(2)}`;
+            document.getElementById('total').textContent = `$${(subtotal + shipping).toFixed(2)}`;
+        }
+        document.getElementById('cart-items').addEventListener('input', function(e) {
+            if (e.target.classList.contains('qty-input')) {
+                var row = e.target.closest('tr');
+                var name = row.children[1].textContent;
+                var cart = JSON.parse(localStorage.getItem('aidify_cart') || '[]');
+                var found = cart.find(item => item.name === name);
+                if (found) {
+                    found.qty = parseInt(e.target.value);
+                    localStorage.setItem('aidify_cart', JSON.stringify(cart));
+                }
+                updateTotals();
+            }
+        });
+        document.getElementById('cart-items').addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-btn')) {
+                var row = e.target.closest('tr');
+                var name = row.children[1].textContent;
+                var cart = JSON.parse(localStorage.getItem('aidify_cart') || '[]');
+                cart = cart.filter(item => item.name !== name);
+                localStorage.setItem('aidify_cart', JSON.stringify(cart));
+                renderCart();
+            }
+        });
+        document.getElementById('checkoutBtn').addEventListener('click', function() {
+            document.getElementById('checkout-message').style.display = 'block';
+            localStorage.removeItem('aidify_cart');
+            setTimeout(renderCart, 1500);
+        });
+
+        document.getElementById('whatsappBtn').addEventListener('click', function() {
+            var cart = JSON.parse(localStorage.getItem('aidify_cart') || '[]');
+            if (!cart.length) {
+                alert('Your cart is empty. Add products before sending to WhatsApp.');
+                return;
+            }
+
+            var message = 'Hello, I want to order these items:%0A';
+            cart.forEach(function(item) {
+                var line = `${item.name} x${item.qty} @ $${parseFloat(item.price).toFixed(2)} = $${(item.qty * parseFloat(item.price)).toFixed(2)}`;
+                message += line + '%0A';
+            });
+
+            var subtotal = document.getElementById('subtotal').textContent;
+            var shipping = document.getElementById('shipping').textContent;
+            var total = document.getElementById('total').textContent;
+            message += '%0A' + `Subtotal: ${subtotal}%0AShipping: ${shipping}%0ATotal: ${total}`;
+
+            var phone = '+237 672010237'; // replace with your actual WhatsApp number in international format (no + or spaces)
+            var url = `https://api.whatsapp.com/send?phone=${phone}&text=${message}`;
+            window.open(url, '_blank');
+        });
+
+        renderCart();
+    </script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Product - Fashionista</title>
+    <link rel="stylesheet" href="index.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f7f7fa;
+        }
+        .navbar {
+            background: #222;
+            color: #fff;
+            padding: 12px 0;
+            text-align: center;
+        }
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 4px;
+            font-size: 12px;
+            font-weight: bold;
+            transition: color 0.2s;
+        }
+        .navbar a:hover {
+            color: #ff4081;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            padding: 32px 24px;
+        }
+        h1 {
+            text-align: center;
+            color: #0066ff;
+            margin-bottom: 32px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            background: #0066ff;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #0052cc;
+        }
+        @media (max-width: 600px) {
+            .form-container {
+                padding: 12px 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="Home.html">Home</a>
+    
+
+       
+    </div>
+    <div class="form-container">
+        <h1>Add New Product</h1>
+        <form id="addProductForm">
+            <div class="form-group">
+                <label for="productName">Product Name</label>
+                <input type="text" id="productName" required>
+            </div>
+            <div class="form-group">
+                <label for="productPrice">Price</label>
+                <input type="text" id="productPrice" required>
+            </div>
+            <div class="form-group">
+                <label for="productImage">Select Image from Desktop</label>
+                <input type="file" id="productImage" accept="image/*" required>
+            </div>
+            <div class="form-group">
+                <label for="productDescription">Description</label>
+                <textarea id="productDescription" rows="4" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="productCategory">Category</label>
+                <select id="productCategory" required>
+                    <option value="Dress">Dress</option>
+                    <option value="Shoes">Shoes</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <button type="submit">Add Product</button>
+        </form>
+    </div>
+    <script> 
+        // Only allow admin users on add product page
+        if (localStorage.getItem('is_admin') !== 'true') {
+            alert('Admin access required. Please log in as admin.');
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('addProductForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            var fileInput = document.getElementById('productImage');
+            if (fileInput.files.length === 0) {
+                alert('Please select an image from your desktop.');
+                return;
+            }
+            var file = fileInput.files[0];
+            var reader = new FileReader();
+            reader.onload = function(event) {
+                var img = event.target.result;
+                var name = document.getElementById('productName').value;
+                var price = document.getElementById('productPrice').value;
+                var desc = document.getElementById('productDescription').value;
+                var category = document.getElementById('productCategory').value;
+
+                var product = {
+                    name: name,
+                    price: price,
+                    img: img,
+                    desc: desc,
+                    category: category
+                };
+
+                var products = JSON.parse(localStorage.getItem('fashion_products') || '[]');
+                products.unshift(product);
+                localStorage.setItem('fashion_products', JSON.stringify(products));
+
+                var response = confirm('Product "' + name + '" added successfully!\n\nView on Home Page?');
+                if (response) {
+                    window.location.href = 'Home.html';
+                } else {
+                    document.getElementById('addProductForm').reset();
+                    document.getElementById('productImage').value = '';
+                    alert('Ready to add another product!');
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="Home.css">
+</head>
+<body>
+  <div class="navbar">
+    <a href="Home.html">Home</a>
+    <a href="services.html">services</a>
+    <a href="about,html">About</a>
+    <a href="cart.html">cart</a>
+    
+    <a href="product.html"></a>
+    <a href="add-product.html">Add Product</a>
+  </div>
+  <div class="main-container">
+    <div class="content">
+      <h1>Welcome to rolexsFashion</h1>
+      <p>Your one-stop shop for the latest fashion trends. Explore our collection of stylish clothing, accessories, and more. Shop now and elevate your wardrobe with Fashionista!</p>
+      <a href="product.html" class="shop-now-btn">Shop Now</a>
+    </div>
+  </div>
+  <div class="featured-products">
+    <h2>Featured Products</h2>
+    <div class="products-grid" id="productsGrid">
+      <!-- Products will be loaded here -->
+    </div>
+  </div>
+  
+  <!-- Modal for product image -->
+  <div id="productModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center;">
+    <div style="position: relative; max-width: 80%; max-height: 80%;">
+      <span id="closeModal" style="position: absolute; top: -30px; right: -30px; font-size: 30px; color: #fff; cursor: pointer;">&times;</span>
+      <img id="modalImg" src="" alt="" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">
+    </div>
+  </div>
+
+  <script>
+    // Redirect to login page if user is not logged in
+    if (localStorage.getItem('Rolex_logged_in') !== 'true') {
+      window.location.href = 'login.html';
+    }
+
+    var isAdmin = localStorage.getItem('is_admin') === 'true';
+    var addProductLink = document.querySelector('.navbar a[href="add-product.html"]');
+    if (!isAdmin && addProductLink) {
+      addProductLink.style.display = 'none';
+    }
+
+    // Load products from localStorage
+    var products = JSON.parse(localStorage.getItem('fashion_products') || '[]');
+    var grid = document.getElementById('productsGrid');
+    products.forEach(function(product, index) {
+      var card = document.createElement('div');
+      card.className = 'product-card';
+      var buttonsHtml = '<button class="add-cart-btn">Add to Cart</button>';
+      if (isAdmin) {
+        buttonsHtml += '<button class="delete-btn" data-index="' + index + '">Delete</button>';
+      }
+      card.innerHTML = `
+        <img src="${product.img}" alt="${product.name}" style="cursor: pointer;">
+        <h3 style="cursor: pointer;">${product.name}</h3>
+        <p>${product.desc}</p>
+        <div class="price">$${product.price}</div>
+        <div style="margin-top:12px;">
+          ${buttonsHtml}
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+
+    // Add to Cart functionality
+    document.addEventListener('click', function(e) {
+      if (e.target.classList.contains('add-cart-btn')) {
+        var card = e.target.closest('.product-card');
+        var name = card.querySelector('h3').textContent;
+        var price = card.querySelector('.price').textContent.replace('$','');
+        var img = card.querySelector('img').getAttribute('src');
+        var product = { name: name, price: price, img: img, qty: 1 };
+        var cart = JSON.parse(localStorage.getItem('aidify_cart') || '[]');
+        var found = cart.find(item => item.name === name);
+        if (found) {
+          found.qty += 1;
+        } else {
+          cart.push(product);
+        }
+        localStorage.setItem('aidify_cart', JSON.stringify(cart));
+        e.target.textContent = 'Added!';
+        e.target.style.background = '#4caf50';
+        setTimeout(function() {
+          e.target.textContent = 'Add to Cart';
+          e.target.style.background = '';
+        }, 1200);
+      } else if (e.target.classList.contains('delete-btn')) {
+        var index = e.target.getAttribute('data-index');
+        var products = JSON.parse(localStorage.getItem('fashion_products') || '[]');
+        products.splice(index, 1);
+        localStorage.setItem('fashion_products', JSON.stringify(products));
+        location.reload(); // Reload to update the display
+      } else if (e.target.closest('.product-card') && !e.target.classList.contains('add-cart-btn') && !e.target.classList.contains('delete-btn')) {
+        // Click on product card (not buttons) to open image modal
+        var card = e.target.closest('.product-card');
+        var img = card.querySelector('img').src;
+
+        document.getElementById('modalImg').src = img;
+        document.getElementById('productModal').style.display = 'flex';
+      }
+    });
+
+    // Close modal
+    document.getElementById('closeModal').addEventListener('click', function() {
+      document.getElementById('productModal').style.display = 'none';
+    });
+
+    // Close modal when clicking outside
+    document.getElementById('productModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.style.display = 'none';
+      }
+    });
+
+    // Add to cart from modal
+    document.getElementById('modalAddCart').addEventListener('click', function() {
+      var name = document.getElementById('modalName').textContent;
+      var price = document.getElementById('modalPrice').textContent.replace('$','');
+      var img = document.getElementById('modalImg').src;
+      var product = { name: name, price: price, img: img, qty: 1 };
+      var cart = JSON.parse(localStorage.getItem('aidify_cart') || '[]');
+      var found = cart.find(item => item.name === name);
+      if (found) {
+        found.qty += 1;
+      } else {
+        cart.push(product);
+      }
+      localStorage.setItem('aidify_cart', JSON.stringify(cart));
+      alert('Added to cart!');
+      document.getElementById('productModal').style.display = 'none';
+    });
+  </script>
+</body>
+</html>

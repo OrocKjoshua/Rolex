@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services - Rolex Fashion</title>
+    <link rel="stylesheet" href="Home.css">
+    <style>
+        .services-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 80px 20px;
+            text-align: center;
+        }
+        .services-hero h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .services-hero p {
+            font-size: 1.3em;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .service-card {
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+        .service-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #007BFF;
+        }
+        .service-card h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .service-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+        .cta-section {
+            background: #f8f9fa;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .cta-section h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .cta-section p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            color: #666;
+        }
+        .cta-btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #007BFF;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            transition: background 0.3s;
+        }
+        .cta-btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="Home.html">Home</a>
+        <a href="services.html">Services</a>
+        <a href="product.html">Products</a>
+        <a href="cart.html">Cart</a>
+        <a href="login.html">Login</a>
+    </div>
+
+    <div class="services-hero">
+        <h1>Our Premium Services</h1>
+        <p>Experience luxury and excellence with our comprehensive range of Rolex services, designed to meet all your fashion and watch needs.</p>
+    </div>
+
+    <div class="services-grid">
+        <div class="service-card">
+            <div class="service-icon">⌚</div>
+            <h3>Custom Design</h3>
+            <p>Create your perfect Rolex with our expert designers. Choose from premium materials, unique engravings, and personalized styling to make your watch truly one-of-a-kind.</p>
+        </div>
+
+        <div class="service-card">
+            <div class="service-icon">🔧</div>
+            <h3>Expert Repair</h3>
+            <p>Trust our certified technicians to restore your Rolex to its original glory. We specialize in movement repairs, case restoration, and crystal replacement.</p>
+        </div>
+
+        <div class="service-card">
+            <div class="service-icon">✨</div>
+            <h3>Polishing & Cleaning</h3>
+            <p>Keep your Rolex shining with our professional polishing and cleaning services. Remove scratches, restore luster, and maintain that premium finish.</p>
+        </div>
+
+        <div class="service-card">
+            <div class="service-icon">🎨</div>
+            <h3>Engraving Services</h3>
+            <p>Add a personal touch with custom engraving. Whether it's initials, dates, or special messages, we create beautiful, lasting inscriptions.</p>
+        </div>
+
+        <div class="service-card">
+            <div class="service-icon">📦</div>
+            <h3>Watch Packaging</h3>
+            <p>Elevate your gifting experience with our luxury packaging services. Perfect presentation for birthdays, anniversaries, or corporate gifts.</p>
+        </div>
+
+        <div class="service-card">
+            <div class="service-icon">👑</div>
+            <h3>VIP Consultation</h3>
+            <p>Receive personalized guidance from our luxury consultants. Get expert advice on Rolex selection, maintenance, and investment opportunities.</p>
+        </div>
+    </div>
+
+    <div class="cta-section">
+        <h2>Ready to Experience Luxury?</h2>
+        <p>Contact us today to schedule your service or learn more about our premium offerings.</p>
+        <a href="Home.html" class="cta-btn">Get Started</a>
+    </div>
+
+    <script>
+        // Login guard
+        if (localStorage.getItem('Rolex_logged_in') !== 'true') {
+            window.location.href = 'login.html';
+        }
+
+        // Hide login link if logged in
+        if (localStorage.getItem('Rolex_logged_in') === 'true') {
+            var loginLink = document.querySelector('.navbar a[href="login.html"]');
+            if (loginLink) {
+                loginLink.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

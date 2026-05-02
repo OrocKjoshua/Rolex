@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rolex Fashion</title>
+</head>
+<body>
+    <script>
+        // Check if user is logged in
+        if (localStorage.getItem('Rolex_logged_in') === 'true') {
+            window.location.href = 'Home.html';
+        } else {
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
