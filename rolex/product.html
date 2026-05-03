@@ -13,7 +13,7 @@
 	<div class="hero">
 		<div class="hero-text">
 			<h1>Welcome to Rolex</h1>
-			<p>Your one-stop shop for Rolex, Discover the latest trends and exclusive offers!</p>
+			<p>Your one-stop shop for Rolex, trends </p>
 			<a href="product.html" style="background:#ff4081;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:18px;">Shop Now</a>
 			<a href="cart.html" style="display:inline-block;margin-top:16px;background:#0077ff;color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:18px;">View Cart</a>
 		</div>
@@ -146,7 +146,7 @@ products.forEach(function(product, index) {
     card.className = 'product-card';
     var buttonsHtml = '<button class="add-cart-btn">Add to Cart</button>';
     if (isAdmin) {
-      buttonsHtml += '<button class="delete-btn" data-index="' + index + '">Delete</button>';
+      buttonsHtml += '<button class="edit-btn" data-index="' + index + '">Edit</button><button class="delete-btn" data-index="' + index + '">Delete</button>';
     }
     card.innerHTML = `
         <img src="${product.img}" alt="${product.name}" style="cursor: pointer;">
@@ -159,6 +159,15 @@ products.forEach(function(product, index) {
     `;
     grid.appendChild(card);
 });
+
+if (isAdmin) {
+  document.querySelectorAll('.static-products .product-card').forEach(card => {
+    var buttonsDiv = document.createElement('div');
+    buttonsDiv.style.marginTop = '12px';
+    buttonsDiv.innerHTML = '<button class="edit-btn">Edit</button><button class="delete-btn">Delete</button>';
+    card.appendChild(buttonsDiv);
+  });
+}
 
 // Add to Cart functionality using localStorage
 document.addEventListener('click', function(e) {
@@ -182,13 +191,36 @@ document.addEventListener('click', function(e) {
             e.target.textContent = 'Add to Cart';
             e.target.style.background = '';
         }, 1200);
+    } else if (e.target.classList.contains('edit-btn')) {
+        var card = e.target.closest('.product-card');
+        var name = prompt('New name:', card.querySelector('h3').textContent);
+        if (name) card.querySelector('h3').textContent = name;
+        var desc = prompt('New description:', card.querySelector('p').textContent);
+        if (desc) card.querySelector('p').textContent = desc;
+        var price = prompt('New price:', card.querySelector('.price').textContent.replace('$',''));
+        if (price) card.querySelector('.price').textContent = '$' + price;
+        // For dynamic
+        var index = e.target.getAttribute('data-index');
+        if (index !== null) {
+            var products = JSON.parse(localStorage.getItem('fashion_products') || '[]');
+            products[index].name = name || products[index].name;
+            products[index].desc = desc || products[index].desc;
+            products[index].price = price || products[index].price;
+            localStorage.setItem('fashion_products', JSON.stringify(products));
+        }
     } else if (e.target.classList.contains('delete-btn')) {
         var index = e.target.getAttribute('data-index');
-        var products = JSON.parse(localStorage.getItem('fashion_products') || '[]');
-        products.splice(index, 1);
-        localStorage.setItem('fashion_products', JSON.stringify(products));
-        location.reload(); // Reload to update the display
-    } else if (e.target.closest('.product-card') && !e.target.classList.contains('add-cart-btn') && !e.target.classList.contains('delete-btn')) {
+        if (index !== null) { // dynamic
+            var products = JSON.parse(localStorage.getItem('fashion_products') || '[]');
+            products.splice(index, 1);
+            localStorage.setItem('fashion_products', JSON.stringify(products));
+            location.reload(); // Reload to update the display
+        } else { // static
+            if (confirm('Delete this product?')) {
+                e.target.closest('.product-card').remove();
+            }
+        }
+    } else if (e.target.closest('.product-card') && !e.target.classList.contains('add-cart-btn') && !e.target.classList.contains('delete-btn') && !e.target.classList.contains('edit-btn')) {
         // Click on product card (not buttons) to open image modal
         var card = e.target.closest('.product-card');
         var img = card.querySelector('img').src;
@@ -196,6 +228,10 @@ document.addEventListener('click', function(e) {
         document.getElementById('modalImg').src = img;
         document.getElementById('productModal').style.display = 'flex';
     }
+});
+
+document.getElementById('closeModal').addEventListener('click', function() {
+    document.getElementById('productModal').style.display = 'none';
 });
 
 // Close modal

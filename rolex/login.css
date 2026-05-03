@@ -1,59 +1,79 @@
 body {
-			margin: 0;
-			font-family: Arial, Helvetica, sans-serif;
-			background: hsl(240, 6%, 74%);  
-		}
-    *{
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: hsl(240, 6%, 74%);
+}
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-
-  }
-  .mainlog h1{
-    margin-left: 4.5em;
-
-  }
-.mainlog{
-  background-image: url(./rolex\ img/c5.jpeg);
-  font-family: Arial, Helvetica, sans-serif;
+}
+.mainlog {
+    background-image: url("./rolex img/c5.jpeg");
     background-repeat: no-repeat;
     background-size: cover;
-    height: 28em;
-    width: 26em;
-    align-items: center;
-    margin-left: 27em;
+    background-position: center;
+    width: min(90vw, 400px);
+    min-height: 28em;
+    margin: 3em auto;
     border-radius: 19px;
     display: flex;
-     box-shadow: 0 10px 10px rgb(0, 0,0 ,0,1);
-     margin-top: 3em;
-            
+    align-items: center;
+    padding: 1.5rem;
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.15);
 }
- .input-field{
-width: 350px;
-padding: 12px;
-margin: 10px 0;
-border: 1px solid #ccc;
-border-radius: 8px;
-font-size: 14px;
-align-items: center;
-margin-left: 2.5em;
+.mainlog h1 {
+    margin-bottom: 1rem;
 }
-.login-btn{
-  border-radius: 6px;
-  width: 200px;
-  height: 30px;
-  background-color:rgb(83, 205, 83);
-  margin-left: 8em;
-  margin-top: 3em;
-  
+.form-log {
+    width: 100%;
+}
+.input-field {
+    width: 100%;
+    max-width: 350px;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+}
+.login-btn {
+    border-radius: 6px;
+    width: 100%;
+    max-width: 200px;
+    height: 40px;
+    background-color: rgb(83, 205, 83);
+    margin-top: 1rem;
+    cursor: pointer;
+    border: none;
 }
 .mainlog a {
     color: blue;
     text-decoration: none;
-    
 }
-.mainlog p{
-  margin-top: 2em;
-  margin-left: 5em;
+.mainlog p {
+    margin-top: 1.5rem;
+}
+@media (max-width: 700px) {
+    .mainlog {
+        width: min(95vw, 420px);
+        min-height: 32em;
+        padding: 1rem;
+        margin-top: 2em;
+    }
+    .mainlog h1 {
+        margin-left: 0;
+        text-align: center;
+    }
+    .input-field {
+        max-width: 100%;
+    }
+    .login-btn {
+        max-width: 100%;
+    }
+    .mainlog p {
+        margin-left: 0;
+        text-align: center;
+    }
 }
 

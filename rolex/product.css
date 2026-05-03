@@ -127,6 +127,20 @@
 		.delete-btn:hover {
 			background: #c82333;
 		}
+		.edit-btn {
+			background: #007bff;
+			color: #fff;
+			border: none;
+			padding: 10px 20px;
+			border-radius: 8px;
+			cursor: pointer;
+			margin-top: 12px;
+			margin-left: 10px;
+			transition: background 0.3s;
+		}
+		.edit-btn:hover {
+			background: #0056b3;
+		}
 		@media (max-width: 700px) {
 			.hero {
 				flex-direction: column;
