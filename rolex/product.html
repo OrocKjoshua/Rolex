@@ -123,10 +123,30 @@
 	</div>
 
 		<script>
-// Require login before viewing products page
-if (localStorage.getItem('Rolex_logged_in') !== 'true') {
-    window.location.href = 'login.html';
-}
+// Socket.IO client to receive real-time new-product events
+;(function(){
+  var s = document.createElement('script');
+  s.src = '/socket.io/socket.io.js';
+  s.onload = function(){
+    try{
+      var socket = io();
+      socket.on('connect', function(){ console.log('Socket connected'); });
+      socket.on('new-product', function(product){
+        try{
+          var grid = document.getElementById('productsGrid');
+          var card = document.createElement('div');
+          card.className = 'product-card';
+          card.innerHTML = "\n            <img src=\"" + (product.img || './rolex img/a1.jpeg') + "\" alt=\"" + (product.name || '') + "\" style=\"cursor: pointer;\">\n            <h3 style=\"cursor: pointer;\">" + (product.name || '') + "</h3>\n            <p>" + (product.desc || '') + "</p>\n            <div class=\"price\">$" + (product.price || '') + "</div>\n            <div style=\"margin-top:12px;\"><button class=\"add-cart-btn\">Add to Cart</button></div>\n          ";
+          grid.insertBefore(card, grid.firstChild);
+          var products = JSON.parse(localStorage.getItem('fashion_products') || '[]');
+          products.unshift({ name: product.name, desc: product.desc, price: product.price, img: product.img });
+          localStorage.setItem('fashion_products', JSON.stringify(products));
+        }catch(e){console.error('Error handling new-product', e)}
+      });
+    }catch(e){console.error('Socket setup failed', e)}
+  };
+  document.head.appendChild(s);
+})();
 
 // Hide login/register links if user is logged in
 if (localStorage.getItem('Rolex_logged_in') === 'true') {
@@ -144,9 +164,9 @@ var isAdmin = localStorage.getItem('is_admin') === 'true';
 products.forEach(function(product, index) {
     var card = document.createElement('div');
     card.className = 'product-card';
-    var buttonsHtml = '<button class="add-cart-btn">Add to Cart</button>';
+    var buttonsHtml = '<button class="add-cart-btn" type="button">Add to Cart</button>';
     if (isAdmin) {
-      buttonsHtml += '<button class="edit-btn" data-index="' + index + '">Edit</button><button class="delete-btn" data-index="' + index + '">Delete</button>';
+      buttonsHtml += '<button class="edit-btn" data-index="' + index + '" type="button">Edit</button><button class="delete-btn" data-index="' + index + '" type="button">Delete</button>';
     }
     card.innerHTML = `
         <img src="${product.img}" alt="${product.name}" style="cursor: pointer;">
@@ -164,33 +184,75 @@ if (isAdmin) {
   document.querySelectorAll('.static-products .product-card').forEach(card => {
     var buttonsDiv = document.createElement('div');
     buttonsDiv.style.marginTop = '12px';
-    buttonsDiv.innerHTML = '<button class="edit-btn">Edit</button><button class="delete-btn">Delete</button>';
+    buttonsDiv.innerHTML = '<button class="edit-btn" type="button">Edit</button><button class="delete-btn" type="button">Delete</button>';
     card.appendChild(buttonsDiv);
   });
 }
 
 // Add to Cart functionality using localStorage
-document.addEventListener('click', function(e) {
-    if (e.target.classList.contains('add-cart-btn')) {
-        var card = e.target.closest('.product-card');
-        var name = card.querySelector('h3').textContent;
-        var price = card.querySelector('.price').textContent.replace('$','');
-        var img = card.querySelector('img').getAttribute('src');
+function addToCart(button) {
+    try {
+        var card = button.closest('.product-card');
+        if (!card) {
+            console.error('Could not find product card');
+            return;
+        }
+        
+        var nameEl = card.querySelector('h3');
+        var priceEl = card.querySelector('.price');
+        var imgEl = card.querySelector('img');
+        
+        if (!nameEl || !priceEl || !imgEl) {
+            console.error('Could not find product elements');
+            return;
+        }
+        
+        var name = nameEl.textContent.trim();
+        var price = priceEl.textContent.replace('$','').trim();
+        var img = imgEl.getAttribute('src');
+        
         var product = { name: name, price: price, img: img, qty: 1 };
         var cart = JSON.parse(localStorage.getItem('aidify_cart') || '[]');
         var found = cart.find(item => item.name === name);
+        
         if (found) {
             found.qty += 1;
         } else {
             cart.push(product);
         }
+        
         localStorage.setItem('aidify_cart', JSON.stringify(cart));
-        e.target.textContent = 'Added!';
-        e.target.style.background = '#4caf50';
+        console.log('Product added:', product);
+        console.log('Cart updated:', cart);
+        
+        // Show feedback
+        button.textContent = 'Added!';
+        button.style.background = '#4caf50';
         setTimeout(function() {
-            e.target.textContent = 'Add to Cart';
-            e.target.style.background = '';
+            button.textContent = 'Add to Cart';
+            button.style.background = '';
         }, 1200);
+    } catch (err) {
+        console.error('Error adding to cart:', err);
+    }
+}
+
+// Attach click listeners to all Add to Cart buttons
+var buttons = document.querySelectorAll('.add-cart-btn');
+buttons.forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        addToCart(this);
+    });
+});
+
+// Also use event delegation for dynamically added buttons
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('add-cart-btn')) {
+        e.preventDefault();
+        e.stopPropagation();
+        addToCart(e.target);
     } else if (e.target.classList.contains('edit-btn')) {
         var card = e.target.closest('.product-card');
         var name = prompt('New name:', card.querySelector('h3').textContent);
@@ -199,7 +261,6 @@ document.addEventListener('click', function(e) {
         if (desc) card.querySelector('p').textContent = desc;
         var price = prompt('New price:', card.querySelector('.price').textContent.replace('$',''));
         if (price) card.querySelector('.price').textContent = '$' + price;
-        // For dynamic
         var index = e.target.getAttribute('data-index');
         if (index !== null) {
             var products = JSON.parse(localStorage.getItem('fashion_products') || '[]');
@@ -210,21 +271,19 @@ document.addEventListener('click', function(e) {
         }
     } else if (e.target.classList.contains('delete-btn')) {
         var index = e.target.getAttribute('data-index');
-        if (index !== null) { // dynamic
+        if (index !== null) {
             var products = JSON.parse(localStorage.getItem('fashion_products') || '[]');
             products.splice(index, 1);
             localStorage.setItem('fashion_products', JSON.stringify(products));
-            location.reload(); // Reload to update the display
-        } else { // static
+            location.reload();
+        } else {
             if (confirm('Delete this product?')) {
                 e.target.closest('.product-card').remove();
             }
         }
     } else if (e.target.closest('.product-card') && !e.target.classList.contains('add-cart-btn') && !e.target.classList.contains('delete-btn') && !e.target.classList.contains('edit-btn')) {
-        // Click on product card (not buttons) to open image modal
         var card = e.target.closest('.product-card');
         var img = card.querySelector('img').src;
-
         document.getElementById('modalImg').src = img;
         document.getElementById('productModal').style.display = 'flex';
     }
@@ -234,12 +293,6 @@ document.getElementById('closeModal').addEventListener('click', function() {
     document.getElementById('productModal').style.display = 'none';
 });
 
-// Close modal
-document.getElementById('closeModal').addEventListener('click', function() {
-    document.getElementById('productModal').style.display = 'none';
-});
-
-// Close modal when clicking outside
 document.getElementById('productModal').addEventListener('click', function(e) {
     if (e.target === this) {
         this.style.display = 'none';
@@ -247,7 +300,7 @@ document.getElementById('productModal').addEventListener('click', function(e) {
 });
 
 // Fashion banner slideshow
-const bannerImages = ["./rolex img/a8.jpeg","./rolex img/a1.jpeg","./rolex img/a2.jpeg","./rolex img/a3.jpeg","./rolex img/a4.jpeg","./rolex img/a5.jpeg","./rolex img/a6.jpeg"]; // Add more if needed
+const bannerImages = ["./rolex img/a8.jpeg","./rolex img/a1.jpeg","./rolex img/a2.jpeg","./rolex img/a3.jpeg","./rolex img/a4.jpeg","./rolex img/a5.jpeg","./rolex img/a6.jpeg"];
 let bannerIndex = 0;
 setInterval(function() {
     bannerIndex = (bannerIndex + 1) % bannerImages.length;

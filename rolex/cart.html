@@ -127,16 +127,28 @@
                 <strong>Total: <span id="total">$0.00</span></strong>
             </div>
         </div>
-        <button class="checkout-btn" id="checkoutBtn">Proceed to Checkout</button>
+        
         <button class="checkout-btn" id="whatsappBtn" style="background:#25D366; margin-top:8px;">Send Cart on WhatsApp</button>
-        <div id="checkout-message" style="display:none; color:green; text-align:center; margin-top:20px; font-size:18px;">Thank you for shopping with daniel_fashion!</div>
+        <div id="checkout-message" style="display:none; color:green; text-align:center; margin-top:20px; font-size:18px;">Thank you for shopping with Rolex_fashion!</div>
     </div>
     <script>
         // Load cart from localStorage and render
         function renderCart() {
             var cart = JSON.parse(localStorage.getItem('aidify_cart') || '[]');
+            console.log('Rendering cart with items:', cart);
             var tbody = document.getElementById('cart-items');
             tbody.innerHTML = '';
+            
+            if (cart.length === 0) {
+                var tr = document.createElement('tr');
+                tr.innerHTML = '<td colspan="6" style="text-align: center; padding: 20px; color: #999;">Your cart is empty. <a href="product.html">Continue shopping</a></td>';
+                tbody.appendChild(tr);
+                document.getElementById('subtotal').textContent = '$0.00';
+                document.getElementById('shipping').textContent = '$0.00';
+                document.getElementById('total').textContent = '$0.00';
+                return;
+            }
+            
             cart.forEach(function(item, idx) {
                 var tr = document.createElement('tr');
                 tr.setAttribute('data-price', item.price);
@@ -152,20 +164,24 @@
             });
             updateTotals();
         }
+        
         function updateTotals() {
             let subtotal = 0;
             document.querySelectorAll('#cart-items tr').forEach(row => {
                 const price = parseFloat(row.getAttribute('data-price'));
                 const qty = parseInt(row.querySelector('.qty-input').value);
-                const total = price * qty;
-                row.querySelector('.item-total').textContent = `$${total.toFixed(2)}`;
-                subtotal += total;
+                if (!isNaN(price) && !isNaN(qty)) {
+                    const total = price * qty;
+                    row.querySelector('.item-total').textContent = `$${total.toFixed(2)}`;
+                    subtotal += total;
+                }
             });
             document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
             const shipping = subtotal > 0 ? 10 : 0;
             document.getElementById('shipping').textContent = `$${shipping.toFixed(2)}`;
             document.getElementById('total').textContent = `$${(subtotal + shipping).toFixed(2)}`;
         }
+        
         document.getElementById('cart-items').addEventListener('input', function(e) {
             if (e.target.classList.contains('qty-input')) {
                 var row = e.target.closest('tr');
@@ -179,6 +195,7 @@
                 updateTotals();
             }
         });
+        
         document.getElementById('cart-items').addEventListener('click', function(e) {
             if (e.target.classList.contains('remove-btn')) {
                 var row = e.target.closest('tr');
@@ -188,11 +205,6 @@
                 localStorage.setItem('aidify_cart', JSON.stringify(cart));
                 renderCart();
             }
-        });
-        document.getElementById('checkoutBtn').addEventListener('click', function() {
-            document.getElementById('checkout-message').style.display = 'block';
-            localStorage.removeItem('aidify_cart');
-            setTimeout(renderCart, 1500);
         });
 
         document.getElementById('whatsappBtn').addEventListener('click', function() {
@@ -213,12 +225,17 @@
             var total = document.getElementById('total').textContent;
             message += '%0A' + `Subtotal: ${subtotal}%0AShipping: ${shipping}%0ATotal: ${total}`;
 
-            var phone = '+237 672010237'; // replace with your actual WhatsApp number in international format (no + or spaces)
+            var phone = '+237 672010237';
             var url = `https://api.whatsapp.com/send?phone=${phone}&text=${message}`;
             window.open(url, '_blank');
         });
 
-        renderCart();
+        // Initialize cart display when page loads
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', renderCart);
+        } else {
+            renderCart();
+        }
     </script>
 </body>
 </html>
